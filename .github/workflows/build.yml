@@ -28,8 +28,11 @@ jobs:
         name: "Setup Environment"
         run: |
           sudo apt-get update
-          sudo apt-get install lld imagemagick build-essential
+          sudo apt-get install lld imagemagick
           sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+          wget --no-verbose http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb
+          sudo dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb
+
       - 
         name: Download Orbis SDK
         if: ${{ !steps.cache-orbis.outputs.cache-hit }}
