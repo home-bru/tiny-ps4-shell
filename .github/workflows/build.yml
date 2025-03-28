@@ -17,16 +17,36 @@ jobs:
       -
         name: "Checkout"
         uses: actions/checkout@v4
+      - 
+        name: Restore cached Orbis SDK
+        id: cache-orbis
+        uses: actions/cache/restore@v3
+        with:
+          path: OpenOrbis
+          key: orbis
       -
         name: "Setup Environment"
         run: |
-          git clone --depth 1 --branch v0.5.2 https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain /opt/openorbis-0.5.2
           sudo apt-get update
           sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+      - 
+        name: Download Orbis SDK
+        if: ${{ !steps.cache-orbis.outputs.cache-hit }}
+        run: |
+          wget https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain/releases/download/v0.5.2/v0.5.2.tar.gz
+          tar -xf v0.5.2.tar.gz
+          rm v0.5.2.tar.g
+      - 
+        name: Cache Orbis SDK
+        if: ${{ !steps.cache-orbis.outputs.cache-hit }}
+        uses: actions/cache/save@v3
+        with:
+          path: OpenOrbis
+          key: orbis
       -
         name: "Build Payload"
         run: |
-          export OO_PS4_TOOLCHAIN=/opt/openorbis-0.5.2
+          export OO_PS4_TOOLCHAIN=${{ github.workspace }}/OpenOrbis/PS4Toolchain/
           make
       -
         name: "Upload Binary Artifact"
