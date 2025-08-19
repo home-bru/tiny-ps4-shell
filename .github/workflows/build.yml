@@ -57,5 +57,7 @@ jobs:
         name: "Upload Binary Artifact"
         uses: actions/upload-artifact@v4
         with:
-          path: ./*.pkg
+          path: |
+            ./*.pkg
+            ./*.elf
           if-no-files-found: error
